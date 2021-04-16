@@ -1,0 +1,52 @@
+- name: Install vim
+  apt: pkg=vim,vim-nox,vim-addon-manager
+  become: yes
+
+- name: Install vim plugin packages
+  apt: pkg=vim-pathogen,vim-ctrlp,vim-youcompleteme,vim-syntastic
+  become: yes
+
+- name: Install vim plugins
+  command: vam install {{ item }}
+  with_items:
+  - pathogen
+  - ctrlp
+  - youcompleteme
+  - syntastic
+
+- name: Setup paths for vim
+  file: path={{ item }} state=directory
+  with_items:
+  - ~/.vim/autoload
+  - ~/.vim/bundle
+
+- name: Install vim plugin
+  git: repo={{ item.repo }} dest=~/.vim/bundle/{{ item.name }}
+  with_items:
+  - {repo: "https://github.com/scrooloose/nerdtree.git", name: nerdtree}
+  - {repo: "https://github.com/ntpeters/vim-better-whitespace.git", name: vim-better-whitespace}
+  - {repo: "https://github.com/plasticboy/vim-markdown.git", name: vim-markdown}
+  - {repo: "https://github.com/fatih/vim-go.git", name: vim-go}
+
+- name: Update .vimrc
+  blockinfile:
+    create: yes
+    path: ~/.vimrc
+    marker: "\" {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      execute pathogen#infect()
+      syntax on
+      filetype plugin indent on
+      :set tabstop=2
+      :set shiftwidth=2
+      :set backspace=indent,eol,start
+      :set expandtab
+      :set nobackup
+      :set noswapfile
+      let g:ctrlp_map = '<c-p>'
+      let g:ctrlp_cmd = 'CtrlP'
+      autocmd BufEnter * EnableStripWhitespaceOnSave
+      set encoding=utf-8
+
+- name: Set vim as git editor
+  git_config: name=core.editor scope=global value=vim

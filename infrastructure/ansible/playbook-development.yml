@@ -8,3 +8,5 @@
 
   roles:
     - golang
+    - git
+    - vim
