@@ -1,0 +1,70 @@
+{
+  "variables": {
+    "ansible_host": "packer-development",
+    "ansible_connection": "docker"
+  },
+  "builders": [
+    {
+      "type": "docker",
+      "name": "our-source-development",
+      "image": "debian:9-slim",
+      "commit": "true",
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--name",
+        "{{user `ansible_host`}}",
+        "{{.Image}}",
+        "/bin/bash"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "export DEBIAN_FRONTEND=noninteractive",
+        "echo 'APT::Install-Recommends \"0\";' > /etc/apt/apt.conf.d/00apt",
+        "echo 'APT::Install-Suggests \"0\";' >> /etc/apt/apt.conf.d/00apt",
+        "apt-get update",
+        "apt-get install openssh-server sudo python3 python3-setuptools -yq",
+        "useradd -s /bin/bash vagrant",
+        "echo vagrant:vagrant | chpasswd -m",
+        "install -m 755 -o vagrant -g vagrant -d /home/vagrant",
+        "install -m 700 -o vagrant -g vagrant -d /home/vagrant/.ssh",
+        "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key' > /home/vagrant/.ssh/authorized_keys",
+        "chmod 600 /home/vagrant/.ssh/authorized_keys",
+        "chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys",
+        "echo root:vagrant | chpasswd -m",
+        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/vagrant",
+        "echo 'UseDNS no' >> /etc/ssh/sshd_config",
+        "mkdir -p /var/run/sshd",
+        "rm /usr/sbin/policy-rc.d",
+        "mkdir /vagrant"
+      ]
+    },
+    {
+      "type": "ansible",
+      "user": "vagrant",
+      "playbook_file": "infrastructure/ansible/playbook-development.yml",
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_host={{user `ansible_host`}} ansible_connection={{user `ansible_connection`}}"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": ["rm -rf /vagrant"]
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "docker-tag",
+        "repository": "svanosselaer/our-source-development",
+        "tag": "latest"
+      }
+    ]
+  ]
+}

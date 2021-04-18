@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+packer build -color=false infrastructure/packer/development.json &&
+docker push svanosselaer/our-source-development:latest
