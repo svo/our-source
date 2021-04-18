@@ -1,0 +1,9 @@
+- name: Create required man1 directory so Java runtime can install
+  file:
+    path: /usr/share/man/man1/
+    state: directory
+  become: yes
+
+- name: Install PlantUML diagramming tool
+  apt: pkg=plantuml
+  become: yes

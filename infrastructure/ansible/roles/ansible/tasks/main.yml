@@ -1,0 +1,3 @@
+- name: Install ansible
+  pip: name=ansible executable=/usr/lib/pyenv/shims/pip3.8
+  become: yes

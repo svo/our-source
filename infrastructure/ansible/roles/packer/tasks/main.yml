@@ -1,0 +1,17 @@
+- name: Install unzip
+  apt: pkg=unzip
+  become: yes
+
+- name: Get Packer installer
+  get_url: url=https://releases.hashicorp.com/packer/1.5.6/packer_1.5.6_linux_amd64.zip dest=/usr/local/bin/packer_1.5.6_linux_amd64.zip checksum=sha256:2abb95dc3a5fcfb9bf10ced8e0dd51d2a9e6582a1de1cab8ccec650101c1f9df
+  become: yes
+
+- name: Unarchive Packer
+  unarchive: src=/usr/local/bin/packer_1.5.6_linux_amd64.zip dest=/usr/local/bin mode=0755 remote_src=yes
+  become: yes
+
+- name: Remove file packer .zip
+  file:
+    path: /usr/local/bin/packer_1.5.6_linux_amd64.zip
+    state: absent
+  become: yes

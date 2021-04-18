@@ -1,0 +1,3 @@
+- name: Install avahi for multicast DNS/DNS-SD service discovery
+  apt: pkg=avahi-daemon
+  become: yes

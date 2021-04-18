@@ -1,0 +1,24 @@
+- name: Download adr-tools for capturing architectural decisions
+  get_url:
+    url: https://github.com/npryce/adr-tools/archive/3.0.0.tar.gz
+    dest: /vagrant/adr-tools-3.0.0.tar.gz
+    checksum: sha256:9490f31a457c253c4113313ed6352efcbf8f924970a309a08488833b9c325d7c
+  become: yes
+
+- name: Move adr-tools into lib directory
+  unarchive:
+    src: /vagrant/adr-tools-3.0.0.tar.gz
+    dest: /usr/lib
+    remote_src: yes
+  become: yes
+
+- name: Change owner of system directory
+  file: path=/usr/lib/adr-tools-3.0.0 owner=vagrant group=vagrant recurse=yes
+  become: yes
+
+- name: Add adr-tools bin dir to system-wide $PATH
+  copy:
+    dest: /etc/profile.d/adr-tools.sh
+    content: 'PATH=$PATH:/usr/lib/adr-tools-3.0.0/src/'
+  become: yes
+

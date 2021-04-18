@@ -7,6 +7,26 @@
       become: yes
 
   roles:
+    - avahi
     - golang
     - git
     - vim
+    - adr-tools
+    - plantuml
+    - python
+    - semgrep
+    - ansible
+    - packer
+    - docker
+
+  post_tasks:
+    - name: Add docker group for user
+      user: name=vagrant groups=docker append=yes
+      become: yes
+
+    - name: Set python3 as default python
+      alternatives:
+        name: python
+        link: /usr/bin/python
+        path: /usr/bin/python3
+      become: yes
