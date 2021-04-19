@@ -1,0 +1,42 @@
+@startuml
+
+class Repository {
+  {field} + name:string
+  {field} + url:URL
+}
+
+class LinesOfCode {
+  {field} + language:string
+  {field} + lines:int
+}
+
+class RepositoryStatistics {
+  {field} + repository:Repository
+  {field} + linesOfCode:[]LinesOfCode
+  {field} + firstCommit:Time
+  {field} + lastCommit:Time
+}
+
+class RepositoryCloner {
+  {method} + cloneRepository(repository:Repository):string
+}
+
+class RepositoryStatisticsGenerator {
+  {method} + generate(repositoryPath:[]string):[]RepositoryStatistics
+}
+
+class Facade {
+  {field} - cloner:RepositoryCloner
+  {field} - statisticsGenerator:RepositoryStatisticsGenerator
+
+  {method} + generateStatistics:[]RepositoryStatistics
+  {method} + retrieveStatistics:[]RepositoryStatistics
+}
+
+RepositoryStatistics *-- Repository
+RepositoryStatistics *-- LinesOfCode
+RepositoryCloner .. Repository
+RepositoryStatisticsGenerator .. RepositoryStatistics
+Facade *-- RepositoryCloner
+Facade *-- RepositoryStatisticsGenerator
+@enduml

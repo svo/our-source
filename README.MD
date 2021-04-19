@@ -102,6 +102,12 @@ We are using [adr-tools](https://github.com/npryce/adr-tools) to capture project
 
 [Decision Register](documentation/decisions)
 
+## Design
+
+### Class Diagram
+
+<img src="documentation/architecture/class.png" />
+
 ## System Of Work
 
 ### 1. Know What We Are Doing
