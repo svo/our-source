@@ -12,7 +12,9 @@ golangci-lint-installer
 
 # semgrep
 test_report.html
-semgrep-ci.xml
-semgrep-docker.xml
-semgrep-golang.xml
-semgrep-security.xml
+coverage_report.out
+coverage_report.html
+semgrep-ci-report.xml
+semgrep-docker-report.xml
+semgrep-golang-report.xml
+semgrep-security-report.xml

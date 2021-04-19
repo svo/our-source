@@ -14,9 +14,11 @@ jobs:
 
     - name: Install dependencies
       run: |
+        export GO111MODULE=off
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin -d v1.39.0
         python -m pip install --upgrade pip semgrep
         go get github.com/vakenbolt/go-test-report
+        go get golang.org/x/tools/cmd/cover
 
     - name: Run the default task
       run: |
@@ -28,7 +30,8 @@ jobs:
         name: reports
         path: |
           test_report.html
-          semgrep-ci.xml
-          semgrep-docker.xml
-          semgrep-golang.xml
-          semgrep-security.xml
+          coverage_report.html
+          semgrep-ci-report.xml
+          semgrep-docker-report.xml
+          semgrep-golang-report.xml
+          semgrep-security-report.xml

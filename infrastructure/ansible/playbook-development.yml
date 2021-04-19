@@ -20,6 +20,7 @@
     - docker
     - golangci-lint
     - go-test-report
+    - go-cover
 
   post_tasks:
     - name: Add docker group for user

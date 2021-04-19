@@ -5,9 +5,11 @@ set -vx
 
 golangci-lint run &&
 
-go test -json ./... | go-test-report &&
+go test -coverprofile coverage_report.out -json ./... | go-test-report &&
 
-semgrep --config "p/golang" --error --junit-xml --output semgrep-golang.xml &&
-semgrep --config "p/r2c-ci" --error --junit-xml --output semgrep-ci.xml &&
-semgrep --config "p/r2c-security-audit" --error --junit-xml --output semgrep-security.xml &&
-semgrep --config "p/dockerfile" --error --junit-xml --output semgrep-docker.xml
+go tool cover -html=coverage_report.out -o coverage_report.html &&
+
+semgrep --config "p/golang" --error --junit-xml --output semgrep-golang-report.xml &&
+semgrep --config "p/r2c-ci" --error --junit-xml --output semgrep-ci-report.xml &&
+semgrep --config "p/r2c-security-audit" --error --junit-xml --output semgrep-security-report.xml &&
+semgrep --config "p/dockerfile" --error --junit-xml --output semgrep-docker-report.xml
