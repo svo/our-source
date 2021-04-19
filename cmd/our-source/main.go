@@ -3,12 +3,10 @@ package main
 import "github.com/gin-gonic/gin"
 
 func main() {
-  router := SetupRouter()
-
-  _ = router.Run()
+  _ = setupRouter().Run()
 }
 
-func SetupRouter() *gin.Engine {
+func setupRouter() *gin.Engine {
   router := gin.Default()
 
   router.GET("/ping", func(c *gin.Context) {
