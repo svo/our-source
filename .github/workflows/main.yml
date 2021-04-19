@@ -15,7 +15,18 @@ jobs:
     - name: Install dependencies
       run: |
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin -d v1.39.0
+        python -m pip install --upgrade pip semgrep
 
     - name: Run the default task
       run: |
         bin/test
+
+    - name: Archive reports
+      uses: actions/upload-artifact@v2
+      with:
+        name: reports
+        path: |
+          semgrep-ci.xml
+          semgrep-docker.xml
+          semgrep-golang.xml
+          semgrep-security.xml

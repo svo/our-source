@@ -5,4 +5,9 @@ set -vx
 
 golangci-lint run &&
 
-go test ./...
+go test ./... &&
+
+semgrep --config "p/golang" --error --junit-xml --output semgrep-golang.xml &&
+semgrep --config "p/r2c-ci" --error --junit-xml --output semgrep-ci.xml &&
+semgrep --config "p/r2c-security-audit" --error --junit-xml --output semgrep-security.xml &&
+semgrep --config "p/dockerfile" --error --junit-xml --output semgrep-docker.xml

@@ -76,6 +76,26 @@ bin/build-development-image
 
 **Note:** to run on another environment you will also need to install [Packer](https://www.packer.io).
 
+## Test
+
+How you can run the tests on a `*nix` environment to assert the solution behaviours are as expected.
+
+If using the `Vagrant` setup run the following:
+
+```
+vagrant up docker
+vagrant ssh
+cd /vagrant
+```
+
+If on the `VirtualBox` or `Docker` setup you can use the following:
+
+```
+bin/test
+```
+
+**Note:** to run on another environment you will also need to install [Semgrep](https://semgrep.dev).
+
 ## Decisions
 
 We are using [adr-tools](https://github.com/npryce/adr-tools) to capture project decisions.

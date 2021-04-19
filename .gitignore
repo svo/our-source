@@ -9,3 +9,9 @@
 # downloads
 adr-tools-3.0.0.tar.gz
 golangci-lint-installer
+
+# semgrep
+semgrep-ci.xml
+semgrep-docker.xml
+semgrep-golang.xml
+semgrep-security.xml
