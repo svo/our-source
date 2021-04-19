@@ -1,0 +1,2 @@
+- name: Install go-test-report for HTML unit test output
+  command: /usr/local/go/bin/go get github.com/vakenbolt/go-test-report

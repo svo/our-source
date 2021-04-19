@@ -5,7 +5,7 @@ set -vx
 
 golangci-lint run &&
 
-go test ./... &&
+go test -json ./... | go-test-report &&
 
 semgrep --config "p/golang" --error --junit-xml --output semgrep-golang.xml &&
 semgrep --config "p/r2c-ci" --error --junit-xml --output semgrep-ci.xml &&

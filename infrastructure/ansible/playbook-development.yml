@@ -19,6 +19,7 @@
     - packer
     - docker
     - golangci-lint
+    - go-test-report
 
   post_tasks:
     - name: Add docker group for user
