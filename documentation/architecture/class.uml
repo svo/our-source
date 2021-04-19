@@ -15,6 +15,7 @@ class RepositoryStatistics {
   {field} + linesOfCode:[]LinesOfCode
   {field} + firstCommit:Time
   {field} + lastCommit:Time
+  {field} + numberOfCommits:int
 }
 
 class RepositoryCloner {
@@ -25,12 +26,18 @@ class RepositoryStatisticsGenerator {
   {method} + generate(repositoryPath:[]string):[]RepositoryStatistics
 }
 
+class UserContext {
+  {field} + name
+  {field} + accessToken
+}
+
 class Facade {
+  {field} - context:UserContext
   {field} - cloner:RepositoryCloner
   {field} - statisticsGenerator:RepositoryStatisticsGenerator
 
-  {method} + generateStatistics:[]RepositoryStatistics
-  {method} + retrieveStatistics:[]RepositoryStatistics
+  {method} + generateStatistics(organisation:string, team:string):[]RepositoryStatistics
+  {method} + retrieveStatistics(organisation:string, team:string):[]RepositoryStatistics
 }
 
 RepositoryStatistics *-- Repository
