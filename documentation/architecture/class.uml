@@ -44,6 +44,7 @@ RepositoryStatistics *-- Repository
 RepositoryStatistics *-- LinesOfCode
 RepositoryCloner .. Repository
 RepositoryStatisticsGenerator .. RepositoryStatistics
+Facade *-- UserContext
 Facade *-- RepositoryCloner
 Facade *-- RepositoryStatisticsGenerator
 @enduml
