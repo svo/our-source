@@ -1,0 +1,27 @@
+@startuml
+
+start
+
+while (tasks remaining in to do column?) is (yes)
+  :move task to doing column;
+  :define subtask to meet acceptance criteria;
+
+  while (acceptance criteria not satisfied?) is (yes)
+    while (subtask remaining on task?) is (yes)
+      :write unit test;
+      :implement behaviour to pass unit test;
+      :commit change;
+      :push change;
+      :mark subtask complete on task;
+    endwhile (no)
+
+    :review against acceptance criteria;
+
+  endwhile (no)
+
+  :move task to done column;
+endwhile (no)
+
+stop
+
+@enduml

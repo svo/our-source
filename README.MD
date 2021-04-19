@@ -101,3 +101,24 @@ bin/test
 We are using [adr-tools](https://github.com/npryce/adr-tools) to capture project decisions.
 
 [Decision Register](documentation/decisions)
+
+## System Of Work
+
+### 1. Know What We Are Doing
+
+<img src="documentation/process-so-we-know-what-we-are-doing.png" />
+
+
+### 2. So We Can Implement
+
+<img src="documentation/process-so-we-can-start-implementation.png" />
+
+
+### 3. Plan
+
+<img src="documentation/process-plan-tasks.png" />
+
+
+### 4. Implement
+
+<img src="documentation/process-do-task.png" />

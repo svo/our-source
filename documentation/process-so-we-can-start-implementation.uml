@@ -1,0 +1,13 @@
+@startuml
+
+start
+
+:setup supporting mechanisms for development;
+:create simple project;
+:add dynamic testing mechanisms;
+:add static testing mechanisms;
+:setup continuous integration;
+
+stop
+
+@enduml

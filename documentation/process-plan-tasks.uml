@@ -1,0 +1,14 @@
+@startuml
+
+start
+
+while (tasks remaining to solve project problem?) is (yes)
+  :document task summary;
+  :document task acceptance criteria;
+  :comment on any additional context;
+  :prioritise task;
+endwhile (no)
+
+stop
+
+@enduml
