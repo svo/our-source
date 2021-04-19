@@ -1,0 +1,7 @@
+- name: Get golangci-lint install script
+  get_url: url=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh dest=/vagrant/golangci-lint-installer mode=0755
+
+- name: Install golangci-lint
+  command: ./golangci-lint-installer -b /home/vagrant/go/bin -d v1.39.0
+  args:
+    chdir: /vagrant

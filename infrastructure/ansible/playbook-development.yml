@@ -18,6 +18,7 @@
     - ansible
     - packer
     - docker
+    - golangci-lint
 
   post_tasks:
     - name: Add docker group for user
