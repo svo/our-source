@@ -3,4 +3,6 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-golangci-lint run
+golangci-lint run &&
+
+go test ./...

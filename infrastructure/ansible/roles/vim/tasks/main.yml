@@ -26,7 +26,6 @@
   - {repo: "https://github.com/scrooloose/nerdtree.git", name: nerdtree}
   - {repo: "https://github.com/ntpeters/vim-better-whitespace.git", name: vim-better-whitespace}
   - {repo: "https://github.com/plasticboy/vim-markdown.git", name: vim-markdown}
-  - {repo: "https://github.com/fatih/vim-go.git", name: vim-go}
 
 - name: Update .vimrc
   blockinfile:
