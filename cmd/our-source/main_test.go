@@ -8,7 +8,13 @@ import (
 
   "github.com/gin-gonic/gin"
   "github.com/stretchr/testify/assert"
+  "github.com/stretchr/testify/suite"
 )
+
+type MainSuite struct {
+  suite.Suite
+  router http.Handler
+}
 
 func performRequest(router http.Handler, method, path string) *httptest.ResponseRecorder {
   request, _ := http.NewRequest(method, path, nil)
@@ -17,27 +23,32 @@ func performRequest(router http.Handler, method, path string) *httptest.Response
   return response
 }
 
-func TestPingStatusOk(t *testing.T) {
-  router := setupRouter()
-
-  response := performRequest(router, "GET", "/ping")
-
-  assert.Equal(t, http.StatusOK, response.Code)
+func (suite *MainSuite) SetupTest() {
+  suite.router = setupRouter()
 }
 
-func TestPingMessageBody(t *testing.T) {
-  router := setupRouter()
+func (suite *MainSuite) TestPingStatusOk() {
+  response := performRequest(suite.router, "GET", "/ping")
+
+  assert.Equal(suite.T(), http.StatusOK, response.Code)
+}
+
+func (suite *MainSuite) TestPingMessageBody() {
   body := gin.H{
     "message": "pong",
   }
 
-  response := performRequest(router, "GET", "/ping")
+  response := performRequest(suite.router, "GET", "/ping")
 
   var response_body map[string]string
   err := json.Unmarshal(response.Body.Bytes(), &response_body)
   value, exists := response_body["message"]
 
-  assert.Nil(t, err)
-  assert.True(t, exists)
-  assert.Equal(t, body["message"], value)
+  assert.Nil(suite.T(), err)
+  assert.True(suite.T(), exists)
+  assert.Equal(suite.T(), body["message"], value)
+}
+
+func TestMainSuite(t *testing.T) {
+  suite.Run(t, new(MainSuite))
 }
