@@ -19,11 +19,6 @@ class RepositoryStatistics {
   {field} + numberOfCommits:int
 }
 
-class RepositoryCloner {
-  {method} + cloneRepository(repository:Repository):string
-  {method} + exists(repository:Repository):bool
-}
-
 class RepositoryStatisticsGenerator {
   {method} + generate(repositoryPath:[]string):[]RepositoryStatistics
 }
@@ -37,13 +32,22 @@ class RepositoryStatisticsStore {
   {method} + selectRepositoryStatistics(teamContext:TeamContext):[]RepositoryStatistics
 }
 
-class RepositoryStore {
-  {method} + selectRepository(teamContext:TeamContext):[]Repository
-}
-
 class UserContext {
   {field} + name:string
   {field} + accessToken:string
+}
+
+class RepositoryStore {
+  {field} - context:UserContext
+
+  {method} + selectRepository(teamContext:TeamContext):[]Repository
+}
+
+class RepositoryCloner {
+  {field} - context:UserContext
+
+  {method} + cloneRepository(repository:Repository):string
+  {method} + exists(repository:Repository):bool
 }
 
 class TeamContext {
@@ -52,7 +56,6 @@ class TeamContext {
 }
 
 class Facade {
-  {field} - context:UserContext
   {field} - cloner:RepositoryCloner
   {field} - statisticsGenerator:RepositoryStatisticsGenerator
   {field} - repositoryStore:RepositoryStore
@@ -66,7 +69,8 @@ RepositoryStatistics *-- Repository
 RepositoryStatistics *-- LinesOfCode
 RepositoryStatistics *-- TeamContext
 RepositoryStatisticsStore *-- RepositoryStatistics
-Facade *-- UserContext
+RepositoryCloner *-- UserContext
+RepositoryStore *-- UserContext
 Facade *-- RepositoryCloner
 Facade *-- RepositoryStatisticsGenerator
 Facade *-- RepositoryStatisticsStore
