@@ -1,12 +1,14 @@
-package main
+package server
 
 import "github.com/gin-gonic/gin"
 
-func main() {
-  _ = setupRouter().Run()
+type RouterFactory interface {
+  Build() *gin.Engine
 }
 
-func setupRouter() *gin.Engine {
+type GinRouterFactory struct {}
+
+func (routerFactory GinRouterFactory) Build() *gin.Engine {
   router := gin.Default()
 
   router.GET("/ping", func(c *gin.Context) {
