@@ -12,6 +12,7 @@ class LinesOfCode {
 
 class RepositoryStatistics {
   {field} + repository:Repository
+  {field} + teamContext:[]TeamContext
   {field} + linesOfCode:[]LinesOfCode
   {field} + firstCommit:Time
   {field} + lastCommit:Time
@@ -20,21 +21,42 @@ class RepositoryStatistics {
 
 class RepositoryCloner {
   {method} + cloneRepository(repository:Repository):string
+  {method} + exists(repository:Repository):bool
 }
 
 class RepositoryStatisticsGenerator {
   {method} + generate(repositoryPath:[]string):[]RepositoryStatistics
 }
 
+class RepositoryStatisticsStore {
+  {field} - repositoryStatistics:map[Repository]RepositoryStatistics
+
+  {method} + exists(repository:Repository):bool
+  {method} + insertRepositoryStatistics(repositoryStatistics:RepositoryStatistics):bool
+  {method} + updateRepositoryStatisticsWith(repository:Repository, teamContext:TeamContext):bool
+  {method} + selectRepositoryStatistics(teamContext:TeamContext):[]RepositoryStatistics
+}
+
+class RepositoryStore {
+  {method} + selectRepository(teamContext:TeamContext):[]Repository
+}
+
 class UserContext {
-  {field} + name
-  {field} + accessToken
+  {field} + name:string
+  {field} + accessToken:string
+}
+
+class TeamContext {
+  {field} + organisation:string
+  {field} + team:string
 }
 
 class Facade {
   {field} - context:UserContext
   {field} - cloner:RepositoryCloner
   {field} - statisticsGenerator:RepositoryStatisticsGenerator
+  {field} - repositoryStore:RepositoryStore
+  {field} - repositoryStatisticsStore:RepositoryStatisticsStore
 
   {method} + generateStatistics(organisation:string, team:string):[]RepositoryStatistics
   {method} + retrieveStatistics(organisation:string, team:string):[]RepositoryStatistics
@@ -42,9 +64,11 @@ class Facade {
 
 RepositoryStatistics *-- Repository
 RepositoryStatistics *-- LinesOfCode
-RepositoryCloner .. Repository
-RepositoryStatisticsGenerator .. RepositoryStatistics
+RepositoryStatistics *-- TeamContext
+RepositoryStatisticsStore *-- RepositoryStatistics
 Facade *-- UserContext
 Facade *-- RepositoryCloner
 Facade *-- RepositoryStatisticsGenerator
+Facade *-- RepositoryStatisticsStore
+Facade *-- RepositoryStore
 @enduml
