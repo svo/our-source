@@ -15,7 +15,7 @@ func (suite *SessionContextSuite) SetupTest() {
 }
 
 func (suite *SessionContextSuite) TestCreatesSessionContextWithAccessToken() {
-  assert.Equal(suite.T(), SessionContext{accessToken: "coconuts"}, SessionContext{}.New("coconuts"))
+  assert.Equal(suite.T(), "coconuts", SessionContext{}.New("coconuts").accessToken)
 }
 
 func (suite *SessionContextSuite) TestReturnsAccessToken() {
