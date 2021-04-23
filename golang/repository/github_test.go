@@ -41,7 +41,7 @@ func (suite *GitHubSuite) TestRetrievesGitHubRepositoryByTeamInOrganisation() {
   lister := &MockGitHubRepositoryByTeamLister{}
   gitHubContext := &GitHubContext{gitHubRepositoryByTeamLister: lister}
   context := context.Background()
-  userContext := model.UserContext{}.New("coconuts")
+  userContext := model.SessionContext{}.New("coconuts")
   teamContext := model.TeamContext{}.New("bob", "mary")
 
   lister.On("ListTeamReposBySlug", context, "bob", "mary", mock.Anything).Return(expected, &github.Response{}, nil)
@@ -58,7 +58,7 @@ func (suite *GitHubSuite) TestGetsConnectionToGitHub() {
   clientFactory := &MockGitHubClientFactory{}
   gitHubContext := &GitHubContext{clientFactory: clientFactory}
   context := context.Background()
-  userContext := model.UserContext{}.New("coconuts")
+  userContext := model.SessionContext{}.New("coconuts")
 
   clientFactory.On("NewClient", mock.Anything).Return(expected)
 

@@ -22,12 +22,12 @@ type GitHubContext struct {
   gitHubRepositoryByTeamLister GitHubRepositoryByTeamLister
 }
 
-func (gitHubContext *GitHubContext) Select(context context.Context, userContext model.UserContext, teamContext model.TeamContext)[]*github.Repository {
+func (gitHubContext *GitHubContext) Select(context context.Context, userContext model.SessionContext, teamContext model.TeamContext)[]*github.Repository {
   repository, _, _ := gitHubContext.gitHubRepositoryByTeamLister.ListTeamReposBySlug(context, teamContext.Organisation(), teamContext.Team(), &github.ListOptions{})
 
   return repository
 }
 
-func (gitHubContext *GitHubContext) NewClient(context context.Context, userContext model.UserContext) (*github.Client) {
+func (gitHubContext *GitHubContext) NewClient(context context.Context, userContext model.SessionContext) (*github.Client) {
   return gitHubContext.clientFactory.NewClient(oauth2.NewClient(context, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: userContext.AccessToken()})))
 }
