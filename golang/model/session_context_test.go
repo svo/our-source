@@ -1,27 +1,27 @@
 package model
 
 import (
-  "testing"
+	"testing"
 
-  "github.com/stretchr/testify/assert"
-  "github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 type SessionContextSuite struct {
-  suite.Suite
+	suite.Suite
 }
 
 func (suite *SessionContextSuite) SetupTest() {
 }
 
 func (suite *SessionContextSuite) TestCreatesSessionContextWithAccessToken() {
-  assert.Equal(suite.T(), "coconuts", SessionContext{}.New("coconuts").accessToken)
+	assert.Equal(suite.T(), "coconuts", SessionContext{}.New("coconuts").accessToken)
 }
 
 func (suite *SessionContextSuite) TestReturnsAccessToken() {
-  assert.Equal(suite.T(), "coconuts",  SessionContext{accessToken: "coconuts"}.AccessToken())
+	assert.Equal(suite.T(), "coconuts", SessionContext{accessToken: "coconuts"}.AccessToken())
 }
 
 func TestSessionContextSuite(t *testing.T) {
-  suite.Run(t, new(SessionContextSuite))
+	suite.Run(t, new(SessionContextSuite))
 }

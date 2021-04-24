@@ -1,39 +1,39 @@
 package server
 
 import (
-  "testing"
+	"testing"
 
-  "github.com/gin-gonic/gin"
-  "github.com/stretchr/testify/assert"
-  "github.com/stretchr/testify/mock"
-  "github.com/stretchr/testify/suite"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
 )
 
 type InitSuite struct {
-  suite.Suite
+	suite.Suite
 }
 
 type MockRouterFactory struct {
-  mock.Mock
+	mock.Mock
 }
 
 func (router *MockRouterFactory) Build() *gin.Engine {
-  args := router.Called()
-  return args.Get(0).(*gin.Engine)
+	args := router.Called()
+	return args.Get(0).(*gin.Engine)
 }
 
 func (suite *InitSuite) TestUsesRouterFactory() {
-  routerFactory := new(MockRouterFactory)
-  router := new(gin.Engine)
+	routerFactory := new(MockRouterFactory)
+	router := new(gin.Engine)
 
-  routerFactory.On("Build").Return(router)
+	routerFactory.On("Build").Return(router)
 
-  result := Init(routerFactory)
+	result := Init(routerFactory)
 
-  assert.Equal(suite.T(), router, result)
-  routerFactory.AssertExpectations(suite.T())
+	assert.Equal(suite.T(), router, result)
+	routerFactory.AssertExpectations(suite.T())
 }
 
 func TestInitSuite(t *testing.T) {
-  suite.Run(t, new(InitSuite))
+	suite.Run(t, new(InitSuite))
 }
