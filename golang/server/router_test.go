@@ -49,6 +49,12 @@ func (suite *GinRouterSuite) TestPingMessageBody() {
   assert.Equal(suite.T(), body["message"], value)
 }
 
+func (suite *GinRouterSuite) TestTeamRepositoryStatusOk() {
+  response := performRequest(suite.router, "GET", "/organisation/coconuts/team/bob/repository")
+
+  assert.Equal(suite.T(), http.StatusOK, response.Code)
+}
+
 func TestGinRouterSuite(t *testing.T) {
   suite.Run(t, new(GinRouterSuite))
 }

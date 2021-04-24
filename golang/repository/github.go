@@ -13,21 +13,19 @@ type GitHubRepositoryByTeamLister interface {
   ListTeamReposBySlug(ctx context.Context, org, slug string, opts *github.ListOptions) ([]*github.Repository, *github.Response, error)
 }
 
-type GitHubClientFactory interface {
-  NewClient(httpClient *http.Client) *github.Client
-}
-
 type GitHubContext struct {
-  clientFactory GitHubClientFactory
+  context context.Context
+  sessionContext model.SessionContext
   gitHubRepositoryByTeamLister GitHubRepositoryByTeamLister
 }
 
-func (gitHubContext *GitHubContext) Select(context context.Context, userContext model.SessionContext, teamContext model.TeamContext)[]*github.Repository {
-  repository, _, _ := gitHubContext.gitHubRepositoryByTeamLister.ListTeamReposBySlug(context, teamContext.Organisation(), teamContext.Team(), &github.ListOptions{})
+func (gitHubContext *GitHubContext) Select(teamContext model.TeamContext)[]*github.Repository {
+  repository, _, _ := gitHubContext.gitHubRepositoryByTeamLister.ListTeamReposBySlug(gitHubContext.context, teamContext.Organisation(), teamContext.Team(), &github.ListOptions{})
 
   return repository
 }
 
-func (gitHubContext *GitHubContext) NewClient(context context.Context, userContext model.SessionContext) (*github.Client) {
-  return gitHubContext.clientFactory.NewClient(oauth2.NewClient(context, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: userContext.AccessToken()})))
+func (gitHubContext *GitHubContext) New(clientFactory func(httpClient *http.Client) *github.Client, context context.Context, sessionContext model.SessionContext) GitHubContext {
+  client := clientFactory(oauth2.NewClient(context, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: sessionContext.AccessToken()})))
+  return GitHubContext {context, sessionContext, client.Teams }
 }

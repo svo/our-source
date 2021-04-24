@@ -22,51 +22,45 @@ func (lister *MockGitHubRepositoryByTeamLister) ListTeamReposBySlug(ctx context.
   return args.Get(0).([]*github.Repository), args.Get(1).(*github.Response), args.Error(2)
 }
 
-type MockGitHubClientFactory struct {
-  mock.Mock
-}
-
-func (client *MockGitHubClientFactory) NewClient(httpClient *http.Client) *github.Client {
-
-  args := client.Called(httpClient)
-  return args.Get(0).(*github.Client)
-}
-
 type GitHubSuite struct {
   suite.Suite
 }
 
 func (suite *GitHubSuite) TestRetrievesGitHubRepositoryByTeamInOrganisation() {
   var expected []*github.Repository
-  lister := &MockGitHubRepositoryByTeamLister{}
-  gitHubContext := &GitHubContext{gitHubRepositoryByTeamLister: lister}
   context := context.Background()
-  userContext := model.SessionContext{}.New("coconuts")
+  lister := &MockGitHubRepositoryByTeamLister{}
+  gitHubContext := &GitHubContext{context: context, sessionContext: model.SessionContext{}, gitHubRepositoryByTeamLister: lister}
   teamContext := model.TeamContext{}.New("bob", "mary")
 
   lister.On("ListTeamReposBySlug", context, "bob", "mary", mock.Anything).Return(expected, &github.Response{}, nil)
 
-  result := gitHubContext.Select(context, userContext, teamContext)
+  result := gitHubContext.Select(teamContext)
 
   assert.Equal(suite.T(), expected, result)
   lister.AssertNumberOfCalls(suite.T(), "ListTeamReposBySlug", 1)
   lister.AssertExpectations(suite.T())
 }
 
-func (suite *GitHubSuite) TestGetsConnectionToGitHub() {
-  var expected *github.Client
-  clientFactory := &MockGitHubClientFactory{}
-  gitHubContext := &GitHubContext{clientFactory: clientFactory}
+func (suite *GitHubSuite) TestCreatesGitHubContextWithGitHubRepositoryByTeamLister() {
+  teamsService := &github.TeamsService{}
+  clientFactory := func(httpClient *http.Client) *github.Client { return &github.Client{Teams: teamsService} }
+
+  assert.Equal(suite.T(), teamsService, (&GitHubContext{}).New(clientFactory, context.Background(), model.SessionContext{}).gitHubRepositoryByTeamLister)
+}
+
+func (suite *GitHubSuite) TestCreatesGitHubContextWithContext() {
   context := context.Background()
-  userContext := model.SessionContext{}.New("coconuts")
+  clientFactory := func(httpClient *http.Client) *github.Client { return &github.Client{} }
 
-  clientFactory.On("NewClient", mock.Anything).Return(expected)
+  assert.Equal(suite.T(), context, (&GitHubContext{}).New(clientFactory, context, model.SessionContext{}).context)
+}
 
-  result := gitHubContext.NewClient(context, userContext)
+func (suite *GitHubSuite) TestCreatesGitHubContextWithSessionContext() {
+  clientFactory := func(httpClient *http.Client) *github.Client { return &github.Client{} }
+  sessionContext := model.SessionContext{}
 
-  assert.Equal(suite.T(), expected, result)
-  clientFactory.AssertNumberOfCalls(suite.T(), "NewClient", 1)
-  clientFactory.AssertExpectations(suite.T())
+  assert.Equal(suite.T(), sessionContext, (&GitHubContext{}).New(clientFactory, context.Background(), sessionContext).sessionContext)
 }
 
 func TestGitHubSuite(t *testing.T) {
