@@ -1,13 +1,20 @@
 package model
 
+import "net/url"
+
 type Repository struct {
   name string
+  url url.URL
 }
 
-func (context Repository) New(name string) Repository {
-  return Repository { name }
+func (repository Repository) New(name string, url url.URL) Repository {
+  return Repository { name, url }
 }
 
-func (context Repository) Name() string {
-  return context.name
+func (repository Repository) Name() string {
+  return repository.name
+}
+
+func (repository Repository) Url() url.URL {
+  return repository.url
 }
