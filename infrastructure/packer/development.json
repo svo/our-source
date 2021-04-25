@@ -41,7 +41,8 @@
         "echo 'UseDNS no' >> /etc/ssh/sshd_config",
         "mkdir -p /var/run/sshd",
         "rm /usr/sbin/policy-rc.d",
-        "mkdir /vagrant"
+        "mkdir /vagrant",
+        "sudo chown -R vagrant: /vagrant"
       ]
     },
     {
