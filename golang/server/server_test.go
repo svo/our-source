@@ -7,6 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/svo/our-source/golang/repository"
 )
 
 type InitSuite struct {
@@ -17,7 +19,7 @@ type MockRouterFactory struct {
 	mock.Mock
 }
 
-func (router *MockRouterFactory) Build() *gin.Engine {
+func (router *MockRouterFactory) Build(gitHubContext repository.GitHub) *gin.Engine {
 	args := router.Called()
 	return args.Get(0).(*gin.Engine)
 }

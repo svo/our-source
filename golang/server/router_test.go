@@ -1,19 +1,28 @@
 package server
 
 import (
+	"testing"
+
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/go-github/v35/github"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/svo/our-source/golang/model"
 )
 
-type GinRouterSuite struct {
-	suite.Suite
-	router http.Handler
+type MockGitHub struct {
+	mock.Mock
+}
+
+func (gitHub *MockGitHub) Select(teamContext model.TeamContext) []*github.Repository {
+	args := gitHub.Called(teamContext)
+	return args.Get(0).([]*github.Repository)
 }
 
 func performRequest(router http.Handler, method, path string) *httptest.ResponseRecorder {
@@ -23,8 +32,15 @@ func performRequest(router http.Handler, method, path string) *httptest.Response
 	return response
 }
 
+type GinRouterSuite struct {
+	suite.Suite
+	router        http.Handler
+	gitHubContext *MockGitHub
+}
+
 func (suite *GinRouterSuite) SetupTest() {
-	suite.router = GinRouterFactory{}.Build()
+	suite.gitHubContext = new(MockGitHub)
+	suite.router = GinRouterFactory{}.Build(suite.gitHubContext)
 }
 
 func (suite *GinRouterSuite) TestPingStatusOk() {
@@ -50,6 +66,9 @@ func (suite *GinRouterSuite) TestPingMessageBody() {
 }
 
 func (suite *GinRouterSuite) TestTeamRepositoryStatusOk() {
+	var expected []*github.Repository
+	suite.gitHubContext.On("Select", (&model.TeamContext{}).New("coconuts", "bob")).Return(expected)
+
 	response := performRequest(suite.router, "GET", "/organisation/coconuts/team/bob/repository")
 
 	assert.Equal(suite.T(), http.StatusOK, response.Code)

@@ -2,13 +2,15 @@ package repository
 
 import (
 	"context"
-	"net/http"
 	"testing"
+
+	"net/http"
 
 	"github.com/google/go-github/v35/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+
 	"github.com/svo/our-source/golang/model"
 )
 
@@ -30,7 +32,7 @@ func (suite *GitHubSuite) TestRetrievesGitHubRepositoryByTeamInOrganisation() {
 	var expected []*github.Repository
 	context := context.Background()
 	lister := &MockGitHubRepositoryByTeamLister{}
-	gitHubContext := &GitHubContext{context: context, sessionContext: model.SessionContext{}, gitHubRepositoryByTeamLister: lister}
+	gitHubContext := &GoGitHubContext{context: context, sessionContext: model.SessionContext{}, gitHubRepositoryByTeamLister: lister}
 	teamContext := model.TeamContext{}.New("bob", "mary")
 
 	lister.On("ListTeamReposBySlug", context, "bob", "mary", mock.Anything).Return(expected, &github.Response{}, nil)
@@ -42,25 +44,25 @@ func (suite *GitHubSuite) TestRetrievesGitHubRepositoryByTeamInOrganisation() {
 	lister.AssertExpectations(suite.T())
 }
 
-func (suite *GitHubSuite) TestCreatesGitHubContextWithGitHubRepositoryByTeamLister() {
+func (suite *GitHubSuite) TestCreatesGoGitHubContextWithGitHubRepositoryByTeamLister() {
 	teamsService := &github.TeamsService{}
 	clientFactory := func(httpClient *http.Client) *github.Client { return &github.Client{Teams: teamsService} }
 
-	assert.Equal(suite.T(), teamsService, (&GitHubContext{}).New(clientFactory, context.Background(), model.SessionContext{}).gitHubRepositoryByTeamLister)
+	assert.Equal(suite.T(), teamsService, (&GoGitHubContext{}).New(clientFactory, context.Background(), model.SessionContext{}).gitHubRepositoryByTeamLister)
 }
 
-func (suite *GitHubSuite) TestCreatesGitHubContextWithContext() {
+func (suite *GitHubSuite) TestCreatesGoGitHubContextWithContext() {
 	context := context.Background()
 	clientFactory := func(httpClient *http.Client) *github.Client { return &github.Client{} }
 
-	assert.Equal(suite.T(), context, (&GitHubContext{}).New(clientFactory, context, model.SessionContext{}).context)
+	assert.Equal(suite.T(), context, (&GoGitHubContext{}).New(clientFactory, context, model.SessionContext{}).context)
 }
 
-func (suite *GitHubSuite) TestCreatesGitHubContextWithSessionContext() {
+func (suite *GitHubSuite) TestCreatesGoGitHubContextWithSessionContext() {
 	clientFactory := func(httpClient *http.Client) *github.Client { return &github.Client{} }
 	sessionContext := model.SessionContext{}
 
-	assert.Equal(suite.T(), sessionContext, (&GitHubContext{}).New(clientFactory, context.Background(), sessionContext).sessionContext)
+	assert.Equal(suite.T(), sessionContext, (&GoGitHubContext{}).New(clientFactory, context.Background(), sessionContext).sessionContext)
 }
 
 func TestGitHubSuite(t *testing.T) {

@@ -1,8 +1,9 @@
 package model
 
 import (
-	"net/url"
 	"testing"
+
+	"net/url"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

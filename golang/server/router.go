@@ -1,27 +1,20 @@
 package server
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/google/go-github/v35/github"
-	"net/http"
 
 	"github.com/svo/our-source/golang/model"
 	"github.com/svo/our-source/golang/repository"
 )
 
 type RouterFactory interface {
-	Build() *gin.Engine
+	Build(gitHubContext repository.GitHub) *gin.Engine
 }
 
 type GinRouterFactory struct{}
 
-func (routerFactory GinRouterFactory) Build() *gin.Engine {
+func (routerFactory GinRouterFactory) Build(gitHubContext repository.GitHub) *gin.Engine {
 	router := gin.Default()
-	context := context.Background()
-	sessionContext := model.SessionContext{}.New("coconuts")
-	clientFactory := func(httpClient *http.Client) *github.Client { return github.NewClient(httpClient) }
-	gitHubContext := (&repository.GitHubContext{}).New(clientFactory, context, sessionContext)
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
