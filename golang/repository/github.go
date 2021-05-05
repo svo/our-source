@@ -8,6 +8,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/svo/our-source/golang/model"
+	"github.com/svo/our-source/golang/transformer"
 )
 
 type GitHubRepositoryByTeamLister interface {
@@ -15,22 +16,28 @@ type GitHubRepositoryByTeamLister interface {
 }
 
 type GitHub interface {
-	Select(teamContext model.TeamContext) []*github.Repository
+	Select(teamContext model.TeamContext) []model.Repository
 }
 
 type GoGitHubContext struct {
 	context                      context.Context
 	sessionContext               model.SessionContext
 	gitHubRepositoryByTeamLister GitHubRepositoryByTeamLister
+	repositoryTransformer        transformer.RepositoryToModelTransformer
 }
 
-func (gitHubContext *GoGitHubContext) Select(teamContext model.TeamContext) []*github.Repository {
+func (gitHubContext *GoGitHubContext) Select(teamContext model.TeamContext) []model.Repository {
 	repository, _, _ := gitHubContext.gitHubRepositoryByTeamLister.ListTeamReposBySlug(gitHubContext.context, teamContext.Organisation(), teamContext.Team(), &github.ListOptions{})
 
-	return repository
+	result := make([]model.Repository, 0)
+	for _, value := range repository {
+		result = append(result, gitHubContext.repositoryTransformer.Transform(*value))
+	}
+
+	return result
 }
 
-func (gitHubContext *GoGitHubContext) New(clientFactory func(httpClient *http.Client) *github.Client, context context.Context, sessionContext model.SessionContext) GoGitHubContext {
+func (gitHubContext *GoGitHubContext) New(clientFactory func(httpClient *http.Client) *github.Client, repositoryTransformer transformer.RepositoryToModelTransformer, context context.Context, sessionContext model.SessionContext) GoGitHubContext {
 	client := clientFactory(oauth2.NewClient(context, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: sessionContext.AccessToken()})))
-	return GoGitHubContext{context, sessionContext, client.Teams}
+	return GoGitHubContext{context, sessionContext, client.Teams, repositoryTransformer}
 }

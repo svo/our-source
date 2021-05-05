@@ -24,9 +24,7 @@ func (routerFactory GinRouterFactory) Build(gitHubContext repository.GitHub) *gi
 
 	router.GET("/organisation/:organisation/team/:team/repository", func(c *gin.Context) {
 		teamContext := model.TeamContext{}.New(c.Param("organisation"), c.Param("team"))
-		c.JSON(200, gin.H{
-			"message": gitHubContext.Select(teamContext),
-		})
+		c.JSON(200, gitHubContext.Select(teamContext))
 	})
 
 	return router

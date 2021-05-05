@@ -10,12 +10,13 @@ import (
 
 	"github.com/svo/our-source/golang/model"
 	"github.com/svo/our-source/golang/repository"
+	"github.com/svo/our-source/golang/transformer"
 )
 
 func Init(factory RouterFactory) *gin.Engine {
 	context := context.Background()
 	sessionContext := model.SessionContext{}.New("coconuts")
 	clientFactory := func(httpClient *http.Client) *github.Client { return github.NewClient(httpClient) }
-	gitHubContext := (&repository.GoGitHubContext{}).New(clientFactory, context, sessionContext)
+	gitHubContext := (&repository.GoGitHubContext{}).New(clientFactory, new(transformer.RepositoryTransformer), context, sessionContext)
 	return factory.Build(&gitHubContext)
 }

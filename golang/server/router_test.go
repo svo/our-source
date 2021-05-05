@@ -8,7 +8,6 @@ import (
 	"net/http/httptest"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/go-github/v35/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -20,9 +19,9 @@ type MockGitHub struct {
 	mock.Mock
 }
 
-func (gitHub *MockGitHub) Select(teamContext model.TeamContext) []*github.Repository {
+func (gitHub *MockGitHub) Select(teamContext model.TeamContext) []model.Repository {
 	args := gitHub.Called(teamContext)
-	return args.Get(0).([]*github.Repository)
+	return args.Get(0).([]model.Repository)
 }
 
 func performRequest(router http.Handler, method, path string) *httptest.ResponseRecorder {
@@ -66,7 +65,7 @@ func (suite *GinRouterSuite) TestPingMessageBody() {
 }
 
 func (suite *GinRouterSuite) TestTeamRepositoryStatusOk() {
-	var expected []*github.Repository
+	var expected []model.Repository
 	suite.gitHubContext.On("Select", (&model.TeamContext{}).New("coconuts", "bob")).Return(expected)
 
 	response := performRequest(suite.router, "GET", "/organisation/coconuts/team/bob/repository")

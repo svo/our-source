@@ -1,6 +1,9 @@
 package model
 
-import "net/url"
+import (
+	"encoding/json"
+	"net/url"
+)
 
 type Repository struct {
 	name string
@@ -17,4 +20,15 @@ func (repository Repository) Name() string {
 
 func (repository Repository) Url() url.URL {
 	return repository.url
+}
+
+func (a Repository) MarshalJSON() ([]byte, error) {
+	data := struct {
+		Name string `json:"name"`
+		Url  string `json:"url"`
+	}{
+		a.name,
+		a.url.String(),
+	}
+	return json.Marshal(data)
 }

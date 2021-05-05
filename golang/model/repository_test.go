@@ -3,6 +3,7 @@ package model
 import (
 	"testing"
 
+	"encoding/json"
 	"net/url"
 
 	"github.com/stretchr/testify/assert"
@@ -34,6 +35,16 @@ func (suite *RepositorySuite) TestReturnsUrl() {
 	expected := url.URL{}
 
 	assert.Equal(suite.T(), expected, Repository{url: expected}.Url())
+}
+
+func (suite *RepositorySuite) TestGeneratesCorrectJson() {
+	expected_name := "coconuts"
+	expected_url := "https://github.com/svo/our-source"
+	test_url, _ := url.Parse(expected_url)
+
+	result, _ := json.Marshal(Repository{}.New(expected_name, *test_url))
+
+	assert.Equal(suite.T(), "{\"name\":\"coconuts\",\"url\":\"https://github.com/svo/our-source\"}", string(result))
 }
 
 func TestRepositorySuite(t *testing.T) {

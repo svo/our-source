@@ -8,6 +8,10 @@ import (
 	"github.com/svo/our-source/golang/model"
 )
 
+type RepositoryToModelTransformer interface {
+	Transform(from github.Repository) model.Repository
+}
+
 type RepositoryTransformer struct{}
 
 func (repository RepositoryTransformer) Transform(from github.Repository) model.Repository {
