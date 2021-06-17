@@ -7,7 +7,7 @@ import (
 )
 
 type Specification struct {
-	AccessToken string
+	AccessToken string `required:"true"`
 }
 
 type Configuration interface {
