@@ -3,6 +3,8 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
+export OUR_SOURCE_ACCESSTOKEN=coconuts
+
 golangci-lint run &&
 
 go test -coverprofile coverage_report.out -json ./... | go-test-report &&
